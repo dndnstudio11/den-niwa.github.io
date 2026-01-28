@@ -52,22 +52,24 @@ html, body {
 
 /* Fullscreen stage for the single image */
 .stage {
-  height: 100%;
+  min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 90px;
   box-sizing: border-box;
   position: relative;
-  z-index: 5;
+  z-index: 1;
 }
 
-img {
+/* Image */
+#photo {
   max-width: 100%;
   max-height: calc(100vh - 180px);
   object-fit: contain;
   display: block;
 
-  cursor: pointer;
+  /* custom cursor (down sign) */
+  cursor: url("cursor-next.svg") 24 24, pointer;
 
   /* download friction */
   -webkit-user-drag: none;
@@ -75,27 +77,26 @@ img {
   -webkit-touch-callout: none;
 }
 
-/* Invisible click zones (kept, but disabled so they don't steal clicks) */
+/* Zones kept for layout, but never steal clicks */
 .zone {
   position: fixed;
-  top: 0;
-  bottom: 0;
+  inset: 0;
   width: 50%;
-  z-index: 6;
-  pointer-events: none; /* key line */
+  pointer-events: none;
+  z-index: 2;
 }
-.zone.left { left: 0; }
-.zone.right { right: 0; }
+.zone.left { left: 0; right: auto; }
+.zone.right { right: 0; left: auto; }
 
 @media (max-width: 900px) {
   .stage { padding: 80px; }
-  img { max-height: calc(100vh - 120px); }
+  #photo { max-height: calc(100vh - 120px); }
   #counter { display: none; }
 }
 
 @media (max-width: 600px) {
   .stage { padding: 36px; }
-  img { max-height: calc(100vh - 48px); }
+  #photo { max-height: calc(100vh - 48px); }
   .label-left, .label-right { font-size: 11px; }
 }
 
