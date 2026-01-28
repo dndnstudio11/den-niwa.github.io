@@ -17,11 +17,13 @@ function preload(src) {
   pre.src = src;
 }
 
-function preloadNextTwo() {
+function preloadAround() {
   const next1 = (imageIndex + 1) % images.length;
   const next2 = (imageIndex + 2) % images.length;
+  const prev1 = (imageIndex - 1 + images.length) % images.length;
   preload(images[next1]);
   preload(images[next2]);
+  preload(images[prev1]);
 }
 
 function updateCounter() {
@@ -29,29 +31,41 @@ function updateCounter() {
     String(imageIndex + 1).padStart(2, "0");
 }
 
-function next() {
-  imageIndex = (imageIndex + 1) % images.length;
+function show() {
   img.src = images[imageIndex];
-  preloadNextTwo();
   updateCounter();
+  preloadAround();
 }
 
-// click on image advances
-img.addEventListener("click", next);
+function next() {
+  imageIndex = (imageIndex + 1) % images.length;
+  show();
+}
+
+function prev() {
+  imageIndex = (imageIndex - 1 + images.length) % images.length;
+  show();
+}
+
+// click on image: left half = prev, right half = next
+img.addEventListener("click", (e) => {
+  const rect = img.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  (x < rect.width / 2) ? prev() : next();
+});
 
 // random entry
 imageIndex = Math.floor(Math.random() * images.length);
-img.src = images[imageIndex];
-updateCounter();
-preloadNextTwo();
+show();
 
-// click margins advances
-document.querySelector(".zone.left").addEventListener("click", next);
+// click margins
+document.querySelector(".zone.left").addEventListener("click", prev);
 document.querySelector(".zone.right").addEventListener("click", next);
 
 // keyboard
 window.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowLeft" || e.key === "ArrowRight") next();
+  if (e.key === "ArrowLeft") prev();
+  if (e.key === "ArrowRight") next();
 });
 
 // swipe
@@ -63,6 +77,7 @@ window.addEventListener("touchstart", (e) => {
 window.addEventListener("touchend", (e) => {
   if (startX === null) return;
   const endX = e.changedTouches[0].clientX;
-  if (Math.abs(endX - startX) > 40) next();
+  const dx = endX - startX;
+  if (Math.abs(dx) > 40) (dx > 0) ? prev() : next();
   startX = null;
 }, { passive: true });
