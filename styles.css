@@ -58,7 +58,7 @@ html, body {
   padding: 90px;
   box-sizing: border-box;
   position: relative;
-  z-index: 5; /* below click zones */
+  z-index: 5;
 }
 
 img {
@@ -67,27 +67,25 @@ img {
   object-fit: contain;
   display: block;
 
+  cursor: pointer;
+
   /* download friction */
   -webkit-user-drag: none;
   user-select: none;
   -webkit-touch-callout: none;
 }
 
-/* Invisible click zones */
+/* Invisible click zones (kept, but disabled so they don't steal clicks) */
 .zone {
   position: fixed;
   top: 0;
   bottom: 0;
   width: 50%;
-  z-index: 6; /* above image so clicks work */
+  z-index: 6;
+  pointer-events: none; /* key line */
 }
 .zone.left { left: 0; }
 .zone.right { right: 0; }
-
-/* Desktop cursor only on image */
-@media (hover: hover) and (pointer: fine) {
-  img { cursor: e-resize; }
-}
 
 @media (max-width: 900px) {
   .stage { padding: 80px; }
