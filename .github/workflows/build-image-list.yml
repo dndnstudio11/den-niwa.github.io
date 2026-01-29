@@ -39,4 +39,3 @@ jobs:
           git add images/list.json
           git commit -m "Update images list" || exit 0
           git push
-
