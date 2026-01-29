@@ -56,7 +56,7 @@ body {
   z-index: 20;
   font-size: var(--font-size-label);
   letter-spacing: var(--letter-spacing-small);
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .label-left {
@@ -115,8 +115,13 @@ body {
   font-family: var(--font-family);
   font-size: var(--font-size-label);
   letter-spacing: var(--letter-spacing-small);
-  opacity: var(--opacity-tertiary);
+  opacity: 0;
   user-select: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+#photo:hover + #counter {
+  opacity: 0.8;
 }
 
 .zone {
