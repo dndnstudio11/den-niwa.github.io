@@ -113,6 +113,7 @@ body {
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  padding-top: var(--space-6xl);
 }
 
 #photo {
@@ -309,12 +310,15 @@ body {
 
 @media (max-width: 900px) {
   .stage {
+    align-items: flex-start;
     padding: 1rem;
+    padding-top: var(--space-xxl);
   }
 
   #photo {
-    max-height: calc(100dvh - 2rem);
-    max-height: calc(100vh - 2rem);
+    margin-top: var(--space-xxl);
+    max-height: calc(100dvh - calc(var(--space-xxl) * 2) - 1rem);
+    max-height: calc(100vh - calc(var(--space-xxl) * 2) - 1rem);
   }
 
   #counter {
@@ -328,12 +332,15 @@ body {
 
 @media (max-width: 600px) {
   .stage {
+    align-items: flex-start;
     padding: 0.5rem;
+    padding-top: var(--space-xxl);
   }
 
   #photo {
-    max-height: calc(100dvh - 1rem);
-    max-height: calc(100vh - 1rem);
+    margin-top: var(--space-xxl);
+    max-height: calc(100dvh - calc(var(--space-xxl) * 2) - 1rem);
+    max-height: calc(100vh - calc(var(--space-xxl) * 2) - 1rem);
   }
 
   .label-left,
