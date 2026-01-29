@@ -26,9 +26,37 @@
 
   let imageIndex = 0; // first image in the list
 
+  const toJapaneseNumeral = (num) => {
+    const japaneseMap = [
+      { value: 1000, numeral: "千" },
+      { value: 100, numeral: "百" },
+      { value: 10, numeral: "十" },
+      { value: 1, numeral: "" },
+    ];
+    const digits = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+
+    if (num === 0) return "零";
+
+    let result = "";
+    let tempNum = num;
+
+    for (const { value, numeral } of japaneseMap) {
+      const digit = Math.floor(tempNum / value);
+      if (digit > 0) {
+        if (value === 1) {
+          result += digits[digit];
+        } else {
+          result += digits[digit] + numeral;
+        }
+        tempNum %= value;
+      }
+    }
+    return result;
+  };
+
   const updateCounter = () => {
     if (!counterEl) return;
-    counterEl.textContent = String(imageIndex + 1).padStart(2, "0");
+    counterEl.textContent = toJapaneseNumeral(imageIndex + 1);
   };
 
   const show = (i) => {

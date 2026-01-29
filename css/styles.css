@@ -76,10 +76,13 @@ body {
 }
 
 .label-left a:hover,
-.label-right a:hover,
+.label-right a:hover {
+  opacity: var(--opacity-secondary);
+}
+
 .about-email a:hover,
 .about-social a:hover {
-  opacity: var(--opacity-secondary);
+  text-decoration: underline;
 }
 
 /* ================================
@@ -100,6 +103,7 @@ body {
   display: block;
   max-width: 100%;
   max-height: calc(100vh - calc(var(--space-6xl) * 2));
+  height: calc((100vh - calc(var(--space-6xl) * 2)) * 0.9);
   object-fit: contain;
   -webkit-user-drag: none;
   user-select: none;
@@ -112,7 +116,7 @@ body {
   bottom: var(--space-xxl);
   transform: translateX(-50%);
   z-index: 20;
-  font-family: var(--font-family);
+  font-family: "Noto Sans JP", var(--font-family);
   font-size: var(--font-size-label);
   letter-spacing: var(--letter-spacing-small);
   opacity: 0;
