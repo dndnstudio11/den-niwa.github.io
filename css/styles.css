@@ -120,6 +120,7 @@ body {
   -webkit-font-smoothing: antialiased;
   will-change: auto;
   transition: opacity 0.3s ease-in-out;
+  touch-action: manipulation;
 }
 
 .stage #counter {
