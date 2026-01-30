@@ -1,4 +1,4 @@
-name: Build images list (manual)
+name: Build images list (manual, deprecated)
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Auto Cache Bust (manual)
+name: Auto Cache Bust (manual, deprecated)
 
 on:
   workflow_dispatch:

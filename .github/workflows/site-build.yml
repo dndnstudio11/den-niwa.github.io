@@ -2,7 +2,15 @@ name: Site Build
 
 on:
   push:
-    branches: [main]
+    branches:
+      - "main"
+    paths:
+      - "images/**"
+      - "*.html"
+      - "css/**"
+      - "js/**"
+      - "tools/generate_images_list.py"
+      - ".github/workflows/site-build.yml"
   workflow_dispatch:
 
 permissions:
@@ -55,8 +63,8 @@ jobs:
             sed -i "s/css\/satoshi\.css?v=[0-9]*/css\/satoshi.css?v=${VERSION}/g" "$file"
             sed -i "s/css\/styles\.css?v=[0-9]*/css\/styles.css?v=${VERSION}/g" "$file"
             sed -i "s/js\/script\.js?v=[0-9]*/js\/script.js?v=${VERSION}/g" "$file"
-            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*\/>/<meta name=\"site-version\" content=\"${VERSION}\" \/>/g" "$file"
-            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*>/<meta name=\"site-version\" content=\"${VERSION}\">/g" "$file"
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"[[:space:]]*\/>/<meta name=\"site-version\" content=\"${VERSION}\" \/>/g" "$file"
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"[[:space:]]*>/<meta name=\"site-version\" content=\"${VERSION}\">/g" "$file"
             echo "Updated $file"
           done
 
