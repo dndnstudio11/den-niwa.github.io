@@ -67,19 +67,28 @@
     counterEl.textContent = toJapaneseNumeral(imageIndex + 1);
   };
 
-  let firstLoad = true;
-  const onFirstLoad = () => {
-    if (!firstLoad) return;
-    firstLoad = false;
-    // Use rAF to ensure style application after paint
-    requestAnimationFrame(() => img.classList.add("loaded"));
-    img.removeEventListener("load", onFirstLoad);
-  };
-  img.addEventListener("load", onFirstLoad);
+  let firstShown = false;
 
-  const show = (i) => {
+  const show = async (i) => {
     imageIndex = (i + images.length) % images.length;
-    img.src = images[imageIndex];
+    const src = images[imageIndex];
+    if (!firstShown && imageIndex === 0) {
+      try {
+        const pre = new Image();
+        pre.src = src;
+        if (pre.decode) await pre.decode();
+      } catch {}
+      img.src = src;
+      requestAnimationFrame(() => img.classList.add("loaded"));
+      // Reveal the entire page once the first image is ready
+      requestAnimationFrame(() => {
+        document.body.classList.remove("page-loading");
+        document.body.classList.add("page-ready");
+      });
+      firstShown = true;
+    } else {
+      img.src = src;
+    }
     preload(images[(imageIndex + 1) % images.length]);
     updateCounter();
   };
@@ -119,5 +128,5 @@
     { passive: true },
   );
 
-  show(0); // load first image
+  await show(0); // load first image with decode
 })();

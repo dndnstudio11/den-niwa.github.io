@@ -53,6 +53,16 @@ body {
   touch-action: none;
 }
 
+/* Page-level loading/ready fade */
+body.page-loading {
+  opacity: 0;
+}
+
+body.page-ready {
+  opacity: 1;
+  transition: opacity 250ms ease-out;
+}
+
 /* ================================
    Navigation & Labels
    ================================ */
@@ -401,6 +411,9 @@ body {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition: none !important;
+  }
+  body.page-ready {
     transition: none !important;
   }
 }
