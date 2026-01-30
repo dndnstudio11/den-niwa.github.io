@@ -4,9 +4,9 @@
 
   const counterEl = document.getElementById("counter");
 
-  // Use deterministic site version from meta tag for cache-busting
+  // Cache-bust list.json aggressively to avoid stale CDN responses
   const versionTag = document.querySelector('meta[name="site-version"]');
-  const bust = (versionTag && versionTag.content) || String(Date.now());
+  const bust = `${(versionTag && versionTag.content) || ""}-${Date.now()}`;
   const res = await fetch(`images/list.json?v=${bust}`, { cache: "no-store" });
   if (!res.ok)
     throw new Error(
