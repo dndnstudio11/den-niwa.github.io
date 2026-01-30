@@ -121,8 +121,13 @@ body {
   -webkit-user-drag: none;
   user-select: none;
   -webkit-touch-callout: none;
+  opacity: 0;
   transition: opacity 0.3s ease-in-out;
   touch-action: manipulation;
+}
+
+#photo.loaded {
+  opacity: 1;
 }
 
 .stage #counter {

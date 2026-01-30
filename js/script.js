@@ -21,6 +21,7 @@
   if (!images.length) throw new Error("No images found in images/list.json");
 
   img.draggable = false;
+  img.loading = "eager";
   img.addEventListener("dragstart", (e) => e.preventDefault());
   img.addEventListener("contextmenu", (e) => e.preventDefault());
 
@@ -65,6 +66,16 @@
     if (!counterEl) return;
     counterEl.textContent = toJapaneseNumeral(imageIndex + 1);
   };
+
+  let firstLoad = true;
+  const onFirstLoad = () => {
+    if (!firstLoad) return;
+    firstLoad = false;
+    // Use rAF to ensure style application after paint
+    requestAnimationFrame(() => img.classList.add("loaded"));
+    img.removeEventListener("load", onFirstLoad);
+  };
+  img.addEventListener("load", onFirstLoad);
 
   const show = (i) => {
     imageIndex = (i + images.length) % images.length;
