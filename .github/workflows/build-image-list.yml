@@ -1,0 +1,43 @@
+name: Build images list
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "images/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate images/list.json
+        run: |
+          python3 - << 'PY'
+          import os, json, re
+          exts = {'.jpg','.jpeg','.png','.webp','.gif'}
+          root = 'images'
+          files = []
+          for name in os.listdir(root):
+            _, ext = os.path.splitext(name)
+            if ext.lower() in exts:
+              files.append(name)
+          def key(s):
+            return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+          files.sort(key=key)
+          with open(os.path.join(root,'list.json'),'w') as f:
+            json.dump(files, f)
+          PY
+
+      - name: Commit updated list.json (if changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/list.json
+          git commit -m "Update images list" || exit 0
+          git push
