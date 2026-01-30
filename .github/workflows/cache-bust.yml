@@ -8,6 +8,7 @@ on:
       - "css/**"
       - "js/**"
       - "*.html"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -20,18 +21,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update CSS versions
+      - name: Update HTML asset versions and site-version
         run: |
-          # Get current timestamp for unique version
-          TIMESTAMP=$(date +%s)
+          # Use latest commit timestamp for deterministic versioning
+          VERSION=$(git log -1 --pretty=format:%ct)
 
           # Update all HTML files with new version
           for file in *.html; do
-            if [ -f "$file" ]; then
-              sed -i "s/css\/satoshi\.css?v=[0-9]*/css\/satoshi.css?v=${TIMESTAMP}/g" "$file"
-              sed -i "s/css\/styles\.css?v=[0-9]*/css\/styles.css?v=${TIMESTAMP}/g" "$file"
-              echo "Updated $file"
-            fi
+            [ -f "$file" ] || continue
+            sed -i "s/css\/satoshi\.css?v=[0-9]*/css\/satoshi.css?v=${VERSION}/g" "$file"
+            sed -i "s/css\/styles\.css?v=[0-9]*/css\/styles.css?v=${VERSION}/g" "$file"
+            sed -i "s/js\/script\.js?v=[0-9]*/js\/script.js?v=${VERSION}/g" "$file"
+            # Update site-version meta tag (self-closing or not)
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*\/>/<meta name=\"site-version\" content=\"${VERSION}\" \/>/g" "$file"
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*>/<meta name=\"site-version\" content=\"${VERSION}\">/g" "$file"
+            echo "Updated $file"
           done
 
       - name: Commit changes

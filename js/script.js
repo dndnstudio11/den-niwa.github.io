@@ -4,13 +4,19 @@
 
   const counterEl = document.getElementById("counter");
 
-  const res = await fetch("images/list.json");
-  if (!res.ok) throw new Error("Missing images/list.json (run workflow once).");
+  // Use deterministic site version from meta tag for cache-busting
+  const versionTag = document.querySelector('meta[name="site-version"]');
+  const bust = (versionTag && versionTag.content) || String(Date.now());
+  const res = await fetch(`images/list.json?v=${bust}`, { cache: "no-store" });
+  if (!res.ok)
+    throw new Error(
+      "Missing images/list.json (ensure it exists or regenerate).",
+    );
 
   const files = await res.json();
   const images = files
     .filter((f) => /\.(jpe?g|png|webp|gif)$/i.test(f))
-    .map((f) => `images/${f}`);
+    .map((f) => encodeURI(`images/${f}`));
 
   if (!images.length) throw new Error("No images found in images/list.json");
 

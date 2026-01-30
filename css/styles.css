@@ -314,7 +314,7 @@ body {
     max-height: calc(100dvh - calc(var(--space-xxl) * 2) - 1rem);
   }
 
-  #counter {
+  .stage #counter {
     opacity: 0.8;
   }
 
@@ -339,7 +339,7 @@ body {
     max-height: calc(100dvh - calc(var(--space-xxl) * 2) - 1rem);
   }
 
-  #counter {
+  .stage #counter {
     opacity: 0.8;
   }
 
@@ -358,8 +358,7 @@ body {
   .about-content,
   .about-intro,
   .about-content h2,
-  .about-social a,
-  .about-return a {
+  .about-social a {
     font-size: var(--font-size-mobile);
   }
 
@@ -378,6 +377,26 @@ body {
 
   .about-return {
     margin-top: 1.5rem;
+  }
+
+  /* Make the About page "Back to Home" match Home labels on mobile */
+  .about-return a {
+    font-size: var(--font-size-label);
+    opacity: 0.8;
+  }
+}
+
+/* ================================
+   Reduced Motion Accessibility
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition: none !important;
   }
 }
 
