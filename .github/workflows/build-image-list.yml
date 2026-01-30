@@ -2,7 +2,7 @@ name: Build images list
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - "images/**"
   workflow_dispatch:
