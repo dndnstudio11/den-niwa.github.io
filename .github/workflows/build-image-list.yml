@@ -1,10 +1,6 @@
-name: Build images list
+name: Build images list (manual)
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "images/**"
   workflow_dispatch:
 
 permissions:
@@ -13,8 +9,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Generate images/list.json
         run: |

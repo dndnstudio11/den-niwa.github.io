@@ -1,0 +1,91 @@
+name: Site Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    # Avoid loops when this workflow commits cache-busted HTML or list.json
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Generate images/list.json
+        run: |
+          if [ -f tools/generate_images_list.py ]; then
+            python3 tools/generate_images_list.py
+          else
+            python3 - << 'PY'
+            import os, json, re
+            exts = {'.jpg','.jpeg','.png','.webp','.gif'}
+            root = 'images'
+            files = []
+            for name in os.listdir(root):
+              _, ext = os.path.splitext(name)
+              if ext.lower() in exts:
+                files.append(name)
+            def key(s):
+              return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+            files.sort(key=key)
+            with open(os.path.join(root,'list.json'),'w') as f:
+              json.dump(files, f)
+            PY
+          fi
+
+      - name: Cache-bust HTML and site-version
+        run: |
+          VERSION=$(git log -1 --pretty=format:%ct)
+          shopt -s nullglob
+          for file in *.html; do
+            sed -i "s/css\/satoshi\.css?v=[0-9]*/css\/satoshi.css?v=${VERSION}/g" "$file"
+            sed -i "s/css\/styles\.css?v=[0-9]*/css\/styles.css?v=${VERSION}/g" "$file"
+            sed -i "s/js\/script\.js?v=[0-9]*/js\/script.js?v=${VERSION}/g" "$file"
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*\/>/<meta name=\"site-version\" content=\"${VERSION}\" \/>/g" "$file"
+            sed -i "s/<meta name=\"site-version\" content=\"[^\"]*\"\s*>/<meta name=\"site-version\" content=\"${VERSION}\">/g" "$file"
+            echo "Updated $file"
+          done
+
+      - name: Commit changes (if any)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/list.json *.html || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: prepare site build (list + cache-bust)"
+            git push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

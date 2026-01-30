@@ -1,13 +1,6 @@
-name: Auto Cache Bust
+name: Auto Cache Bust (manual)
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "css/**"
-      - "js/**"
-      - "*.html"
   workflow_dispatch:
 
 permissions:
@@ -16,10 +9,13 @@ permissions:
 jobs:
   cache-bust:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Update HTML asset versions and site-version
         run: |
